@@ -42,7 +42,7 @@ class Sim {
         this._width = width;
         this._height = height;
         const content = document.getElementById('content');
-        this.splotch = new Splotch(content, width, height, 0.5);
+        this.splotch = new Splotch(content, width, height, 400);
         const clamp = (val: number, min: number, max: number) => {
             if(val < min) return min;
             if(val > max) return max;
@@ -60,10 +60,21 @@ class Sim {
             this.splotch.rect(e.x + 0.9, e.y, 0.1, 1, 'yellow');
         }
         this.splotch.onHover = (e: SplotchMouseEvent) => {
+            
             normalizeMouse(e);
             if(e.x !== this.lastMousePos.x || e.y !== this.lastMousePos.y){
                 // clear the last cell
-                this.drawCell(this.lastMousePos.x, this.lastMousePos.y);
+                // this.drawCell(this.lastMousePos.x, this.lastMousePos.y);
+                this.splotch.rect(this.lastMousePos.x - 1, this.lastMousePos.y - 1, 3, 3, 'black');
+                for(let i = -1; i < 2; i++){
+                    for(let f = -1; f < 2; f++){
+                        const x = this.lastMousePos.x + i;
+                        const y = this.lastMousePos.y + f;
+                        
+                        if(x < 0 || y < 0 || x >= width || y >= height) continue;
+                        this.drawCell(x, y);
+                    }
+                }
                 // 'hover' the new cell
                 drawHighlight(e);
                 this.lastMousePos.x = e.x;
@@ -94,10 +105,14 @@ class Sim {
             this.step();
         };
         clearButton.onclick = ()=>{
-            this.data.fill(false);
+            this.clear();
             if(this.running) this.run();
             this.drawBoard();
         };
+    }
+
+    clear(){
+        this.data.fill(false);
     }
 
     // UI stuff

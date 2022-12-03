@@ -34,17 +34,19 @@ class Splotch{
         this.context.fillStyle = color;
     }
 
-    constructor(parent: Element | null, width: number, height: number, widthScale: number = 1){
+    constructor(parent: Element | null, width: number, height: number, maxWidth = Infinity){
         if(!parent) throw 'Splotch was passed an undefined parent.';
         parent.innerHTML = '';
-        let cWidth = parent.clientWidth * widthScale;
+        let cWidth = parent.clientWidth > maxWidth ? maxWidth : parent.clientWidth;
         
         this.canvas = document.createElement('canvas');
         this.canvas.setAttribute('width', `${cWidth}`);
         this.canvas.setAttribute('height', `${cWidth / (width / height)}`);
         const mapEvent = (e: MouseEvent): SplotchMouseEvent => {
-            const xOffset = this.canvas.offsetLeft;
-            const yOffset = this.canvas.offsetTop;
+            const xOffset = this.canvas.offsetLeft - window.pageXOffset;
+            const yOffset = this.canvas.offsetTop - window.pageYOffset;
+            // console.log(window.pageYOffset);
+            
             const x = (e.clientX - xOffset) / this.canvas.width * width;
             const y = (e.clientY - yOffset) / this.canvas.height * height;
             return {
