@@ -1,5 +1,7 @@
 # Conway's Game of Life
 
+Live site [here](https://assert-justice.github.io/conway_visualized/)
+
 ## Draw a Line
 
 ```ts
